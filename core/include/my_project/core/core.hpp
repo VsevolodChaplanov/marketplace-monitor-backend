@@ -1,15 +1,9 @@
-#ifndef my_project_HPP
-#define my_project_HPP
+#ifndef MARKETPLACEMONITOR_CORE_HPP
+#define MARKETPLACEMONITOR_CORE_HPP
 
 #include <fmt/core.h>
 
-#include <my_project/core/exports/exports.hpp>
-#include <my_project/utility/static_string.hpp>
+#include <monitor/core/exports/exports.hpp>
+#include <monitor/utility/static_string.hpp>
 
-template<static_string V = "hello world"> constexpr auto hello_world() { fmt::println("{}\n", V); }
-
-void MY_PROJECT_CORE_EXPORT hello_example();
-
-inline void HelloWorld() {}
-
-#endif
+#endif // MARKETPLACEMONITOR_CORE_HPP

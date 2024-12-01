@@ -3,7 +3,7 @@ from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 
 
 class ProjectRecipe(ConanFile):
-    name = "my_project"
+    name = "monitor"
     version = "0.1"
     package_type = "library"
 
@@ -56,12 +56,16 @@ class ProjectRecipe(ConanFile):
         return project_components
 
     def requirements(self):
-        self.requires("fmt/[10.2.1]", transitive_headers=True)
-        self.test_requires("catch2/3.5.3")
+        self.requires("boost/1.86.0", transitive_headers=True)
+        self.requires("fmt/10.2.1", transitive_headers=True)
+        self.requires("spdlog/1.14.0")
+        self.test_requires("catch2/3.7.1")
 
     def config_options(self):
         if self.settings.os == "Windows":
             self.options.rm_safe("fPIC")
+
+        
 
     def configure(self):
         if self.options.shared:

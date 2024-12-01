@@ -15,3 +15,30 @@ services:
     volumes:
       - ..:/home/workspaces/:cached
 
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    env_file: .env
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data 
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  redis_data:

@@ -19,7 +19,6 @@ include(options.cmake)
 include(dependencies.cmake)
 
 include(cmake/project-is-top-level.cmake)
-include(cmake/module-registry.cmake)
 include(cmake/variables.cmake)
 include(cmake/ccache.cmake)
 include(cmake/linker.cmake)
@@ -32,14 +31,16 @@ endif()
 
 enable_ipo()
 
-register_module(utility)
-register_module(core)
+add_subdirectory(utility)
+add_subdirectory(core)
+
+add_subdirectory(app)
 
 # ---- Target to link with all library modules
 
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} INTERFACE ${MODULES_REGISTRY})
+target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}::core ${PROJECT_NAME}::utility)
 
 # ---- Install rules for project interface library
 

@@ -25,36 +25,28 @@
             "hidden": true,
             "inherits": "cmake-pedantic",
             "cacheVariables": {
-                "my_project_DEVELOPER_MODE": "ON"
-            }
-        },
-        {
-            "name": "conan",
-            "hidden": true,
-            "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/conan/${hostSystemName}/conan_toolchain.cmake",
-                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW"
+                "monitor_DEVELOPER_MODE": "ON"
             }
         },
         {
             "name": "iwyu",
             "hidden": true,
             "cacheVariables": {
-                "my_project_ENABLE_IWYU_ON_BUILD": "ON"
+                "monitor_ENABLE_IWYU_ON_BUILD": "ON"
             }
         },
         {
             "name": "cppcheck",
             "hidden": true,
             "cacheVariables": {
-                "my_project_ENABLE_CPPCHECK_ON_BUILD": "ON"
+                "monitor_ENABLE_CPPCHECK_ON_BUILD": "ON"
             }
         },
         {
             "name": "clang-tidy",
             "hidden": true,
             "cacheVariables": {
-                "my_project_ENABLE_CLANGTIDY_ON_BUILD": "ON"
+                "monitor_ENABLE_CLANGTIDY_ON_BUILD": "ON"
             }
         },
         {
@@ -182,7 +174,7 @@
                 "rhs": "Linux"
             },
             "cacheVariables": {
-                "my_project_ENABLE_COVERAGE": "ON"
+                "monitor_ENABLE_COVERAGE": "ON"
             }
         },
         {
@@ -194,11 +186,10 @@
             },
             "inherits": [
                 "coverage-linux",
-                "dev-mode",
-                "conan"
+                "dev-mode"
             ],
             "cacheVariables": {
-                "my_project_ENABLE_COVERAGE": "ON"
+                "monitor_ENABLE_COVERAGE": "ON"
             }
         },
         {
@@ -225,8 +216,7 @@
                 "ci-build",
                 "ci-darwin",
                 "dev-mode",
-                "ci-multi-config",
-                "conan"
+                "ci-multi-config"
             ]
         },
         {
@@ -240,7 +230,6 @@
             "inherits": [
                 "ci-build",
                 "ci-linux",
-                "conan",
                 "dev-mode",
                 "clang-tidy",
                 "cppcheck",
@@ -259,8 +248,7 @@
                 "ci-build",
                 "ci-win64",
                 "dev-mode",
-                "ci-multi-config",
-                "conan"
+                "ci-multi-config"
             ]
         },
         {
@@ -276,7 +264,6 @@
                 "dev-mode",
                 "ci-win64-ninja",
                 "ci-multi-config",
-                "conan",
                 "clang-tidy",
                 "cppcheck",
                 "iwyu"
