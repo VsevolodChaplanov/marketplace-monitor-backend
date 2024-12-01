@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  cppapp:
+    container_name: cppapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VARIANT=jammy
+        - GCC_VER=13
+        - LLVM_VER=18
+        - USE_CLANG=1
+    command: sleep infinity
+    volumes:
+      - ..:/home/workspaces/:cached
+
