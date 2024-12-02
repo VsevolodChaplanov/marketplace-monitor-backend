@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.28)
 include(cmake/prelude.cmake)
 include(cmake/common_options.cmake)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(
     ${MAIN_PROJECT_NAME}
     VERSION 0.1.0

@@ -7,6 +7,7 @@ install/
 cmake-build-*
 
 .mypy_cache
+.venv
 
 conan_test/build
 conan_test/CMakeUserPresets.json
