@@ -16,8 +16,6 @@ project(
 include(cmake/vsenvironment.cmake)
 run_vcvarsall()
 
-include(cmake/cpm.cmake)
-
 include(options.cmake)
 include(dependencies.cmake)
 

@@ -9,3 +9,4 @@ os=Linux
 
 [conf]
 tools.build:jobs=16
+tools.cmake.cmaketoolchain:generator=Ninja

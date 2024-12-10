@@ -103,9 +103,11 @@ net::awaitable<void> do_session(std::string host, std::string port, std::string 
 
 int main(int argc, char** argv) {
     try {
-        const auto* const host = "ozon.ru";
+        const auto* const host = "market.yandex.ru";
         const auto* const port = "443";
-        const auto* const target = "/";
+        const auto* const target =
+            "/product--novaia-stantsiia-mini-umnaia-kolonka-s-alisoi/"
+            "1423994419?sku=101429558735&uniqueId=4852853&do-waremd5=y3NNVQLtEmODl35hBxVX-g&resale_goods=resale_new";
         // "/product/tualetnaya-bumaga-kix-3-sloya-12-rulonov-1614138493/?avtc=1&avte=4&avts=1733173513";
         auto const version = 11;
 

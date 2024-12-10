@@ -34,6 +34,9 @@
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/conan/${hostSystemName}/conan_toolchain.cmake",
                 "CMAKE_POLICY_DEFAULT_CMP0091": "NEW"
+            },
+            "environment": {
+                "CPM_USE_LOCAL_PACKAGES": "ON"
             }
         },
         {
@@ -102,7 +105,8 @@
             },
             "inherits": [
                 "flags-gcc-clang",
-                "ci-std"
+                "ci-std",
+                "conan"
             ],
             "generator": "Unix Makefiles",
             "hidden": true,
@@ -119,7 +123,8 @@
             },
             "inherits": [
                 "flags-appleclang",
-                "ci-std"
+                "ci-std",
+                "conan"
             ],
             "generator": "Xcode",
             "hidden": true
@@ -128,7 +133,8 @@
             "name": "ci-win64",
             "inherits": [
                 "flags-msvc",
-                "ci-std"
+                "ci-std",
+                "conan"
             ],
             "condition": {
                 "type": "equals",

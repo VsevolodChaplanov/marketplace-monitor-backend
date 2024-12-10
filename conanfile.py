@@ -56,9 +56,11 @@ class ProjectRecipe(ConanFile):
         return project_components
 
     def requirements(self):
+        self.requires("openssl/3.3.2")
         self.requires("boost/1.86.0", transitive_headers=True)
-        self.requires("fmt/10.2.1", transitive_headers=True)
-        self.requires("spdlog/1.14.0")
+        self.requires("fmt/11.0.2", transitive_headers=True)
+        self.requires("libpqxx/7.9.2")
+        self.requires("spdlog/1.15.0")
         self.test_requires("catch2/3.7.1")
 
     def config_options(self):

@@ -84,8 +84,8 @@ target_include_directories(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PUBLIC fmt::fmt ${MAIN_PROJECT_NAME}::utility
-    PRIVATE ${PROJECT_NAME}_pch ${PROJECT_NAME}_options)
+    PUBLIC fmt::fmt spdlog::spdlog Boost::headers openssl::openssl ${MAIN_PROJECT_NAME}::utility libpqxx::pqxx
+    PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}_pch> $<BUILD_INTERFACE:${PROJECT_NAME}_options>)
 
 # ---- Configure linker
 
