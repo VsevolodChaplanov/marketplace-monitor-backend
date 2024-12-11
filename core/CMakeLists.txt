@@ -7,22 +7,26 @@ include(../cmake/linker.cmake)
 include(../cmake/sanitizers.cmake)
 include(../cmake/static-analyzers.cmake)
 
-set(MODULE_NAME core)
-set(MODULE_FULL_NAME ${MAIN_PROJECT_NAME}-${MODULE_NAME})
-
-include(cmake/options.cmake)
-include(cmake/dependencies.cmake)
-
 project(
-    ${MODULE_FULL_NAME}
+    core
     VERSION
         ${${MAIN_PROJECT_NAME}_VERSION_MAJOR}.${${MAIN_PROJECT_NAME}_VERSION_MINOR}.${${MAIN_PROJECT_NAME}_VERSION_PATCH}
     LANGUAGES CXX)
 
+include(cmake/options.cmake)
+include(cmake/dependencies.cmake)
+    
 # ---- Project options target
 
 add_library(${PROJECT_NAME}_options INTERFACE)
+
+# ---- Features
+
 target_compile_features(${PROJECT_NAME}_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+
+# ---- Options
+
+target_compile_options(${PROJECT_NAME}_options INTERFACE $<$<CXX_COMPILER_ID:MSVC>:/bigobj>)
 
 # ---- Add sanitizers
 
@@ -42,28 +46,28 @@ target_sanitizers(
 # ---- Declare library precompiled headers
 
 add_library(${PROJECT_NAME}_pch INTERFACE) # declare library if pch is off prevent install rule error for unknown target
-if(${MODULE_FULL_NAME}_ENABLE_PCH)
+if(${PROJECT_NAME}_ENABLE_PCH)
     target_precompile_headers(${PROJECT_NAME}_pch INTERFACE <string> <vector>)
     target_link_libraries(${PROJECT_NAME}_pch INTERFACE ${PROJECT_NAME}_options)
 endif()
 
 # ---- Declare library ----
 
-if(${MODULE_FULL_NAME}_BUILD_SHARED_LIBS)
+if(${PROJECT_NAME}_BUILD_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED)
 else()
     add_library(${PROJECT_NAME} STATIC)
 endif()
-add_library(${MAIN_PROJECT_NAME}::${MODULE_NAME} ALIAS ${PROJECT_NAME})
+add_library(${MAIN_PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # ---- Generate export header
 
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
-                       ${PROJECT_BINARY_DIR}/include/${MAIN_PROJECT_NAME}/${MODULE_NAME}/exports/exports.hpp)
+                       ${PROJECT_BINARY_DIR}/include/${MAIN_PROJECT_NAME}/${PROJECT_NAME}/exports/exports.hpp)
 
 # ---- Collect sources
 
-file(GLOB LIBRARY_INCLUDES ${PROJECT_SOURCE_DIR}/include/${MAIN_PROJECT_NAME}/${MODULE_NAME}/*.hpp)
+file(GLOB LIBRARY_INCLUDES ${PROJECT_SOURCE_DIR}/include/${MAIN_PROJECT_NAME}/${PROJECT_NAME}/*.hpp)
 file(GLOB LIBRARY_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 # ---- Set target sources
@@ -121,9 +125,9 @@ endif()
 
 # ---- Doxygen
 
-if(${MODULE_FULL_NAME}_BUILD_DOCS)
+if(${PROJECT_NAME}_BUILD_DOCS)
     include(../cmake/docs.cmake)
-    wrap_doxygen_add_docs(${MODULE_FULL_NAME} SOURCE_DIRS "${ALL_SOURCE_FILES}" OUTPUT "doxygen")
+    wrap_doxygen_add_docs(${PROJECT_NAME} SOURCE_DIRS "${ALL_SOURCE_FILES}" OUTPUT "doxygen")
 endif()
 
 # ---- Build examples
@@ -141,7 +145,7 @@ endif()
 
 # ---- Configure install rules
 
-if(NOT CMAKE_SKIP_INSTALL_RULES AND NOT ${MODULE_FULL_NAME}_SKIP_INSTALL_RULES)
+if(NOT CMAKE_SKIP_INSTALL_RULES AND NOT ${PROJECT_NAME}_SKIP_INSTALL_RULES)
     include(cmake/install-rules.cmake)
 endif()
 

@@ -151,7 +151,8 @@
                 "flags-msvc",
                 "ci-std",
                 "cppcheck",
-                "clang-tidy"
+                "clang-tidy",
+                "conan"
             ],
             "condition": {
                 "type": "equals",

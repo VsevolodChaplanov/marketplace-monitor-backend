@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.28)
 
 include(cmake/prelude.cmake)
 include(cmake/common_options.cmake)
+include(cmake/vsenvironment.cmake)
+run_vcvarsall()
+
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW)
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,9 +19,7 @@ project(
     HOMEPAGE_URL "https://example.com/"
     LANGUAGES CXX)
 
-include(cmake/vsenvironment.cmake)
-run_vcvarsall()
-
+include(cmake/common_options.cmake)
 include(options.cmake)
 include(dependencies.cmake)
 

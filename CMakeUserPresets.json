@@ -81,7 +81,7 @@
             },
             "inherits": [
                 "dev-common",
-                "ci-win64-ninja"
+                "ci-windows-ninja"
             ],
             "environment": {
                 "UseMultiToolTask": "true",
@@ -93,7 +93,8 @@
                 "CMAKE_CXX_COMPILER": "cl.exe",
                 "monitor_ENABLE_CLANGTIDY_ON_BUILD" : "OFF",
                 "monitor_ENABLE_CPPCHECK_ON_BUILD" : "OFF",
-                "monitor_ENABLE_IWYU_ON_BUILD" : "OFF"
+                "monitor_ENABLE_IWYU_ON_BUILD" : "OFF",
+                "monitor_BUILD_TESTS": "ON"
             }
         },
         {
