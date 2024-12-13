@@ -31,12 +31,6 @@ install(
     DESTINATION ${${package}_INSTALL_CMAKEDIR}
     COMPONENT ${package}_Development)
 
-install(
-    EXPORT ${package}Targets
-    NAMESPACE ${package}::
-    DESTINATION ${${package}_INSTALL_CMAKEDIR}
-    COMPONENT ${package}_Development)
-
 if(PROJECT_IS_TOP_LEVEL)
     include(CPack)
 endif()

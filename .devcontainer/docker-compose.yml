@@ -15,6 +15,11 @@ services:
     volumes:
       - ..:/home/workspaces/:cached
 
+  db:
+    image: mysql:8.4
+    container_name: db_container
+    env_file: .env
+
   redis:
     image: redis:latest
     container_name: redis_container

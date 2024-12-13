@@ -6,7 +6,7 @@
 
 namespace mo::core {
 
-    struct MONITOR_CORE_EXPORT query {};
+    struct CORE_EXPORT query {};
 } // namespace mo::core
 
 #endif // MARKETPLACEMONITOR_QUERY_HPP
