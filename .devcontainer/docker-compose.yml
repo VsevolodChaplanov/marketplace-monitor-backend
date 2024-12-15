@@ -14,36 +14,29 @@ services:
     command: sleep infinity
     volumes:
       - ..:/home/workspaces/:cached
+    env_file: .env
+    ports:
+      - "8080:8080"  # Expose app on host machine
+    networks:
+      - db
+    depends_on:
+      - mysql  # Ensure MySQL starts before the app
 
   db:
     image: mysql:8.4
     container_name: db_container
     env_file: .env
-
-  redis:
-    image: redis:latest
-    container_name: redis_container
-    env_file: .env
+    restart: always
     ports:
-      - "6379:6379"
+      - "3306:3306"    # Map MySQL port to host
     volumes:
-      - redis_data:/data 
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
+      - db_data:/var/lib/mysql # Persist database data on the host
+    networks:
+      - db
 
 volumes:
-  redis_data:
+  db_data:
+
+networkds:
+  db:
+    driver: bridge 

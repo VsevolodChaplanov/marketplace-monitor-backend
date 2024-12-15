@@ -1,3 +1,3 @@
-#include <monitor/core/repository.hpp>
+#include <monitor/core/isku_repository.hpp>
 
 namespace mo::core {} // namespace mo::core

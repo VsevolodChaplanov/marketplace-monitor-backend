@@ -1,16 +1,21 @@
 cmake_minimum_required(VERSION 3.28)
 
-include(cmake/prelude.cmake)
-include(cmake/common_options.cmake)
-include(cmake/vsenvironment.cmake)
-run_vcvarsall()
-
 if(POLICY CMP0167)
     cmake_policy(SET CMP0167 NEW)
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(cmake/prelude.cmake)
+include(cmake/common_options.cmake)
+include(cmake/vsenvironment.cmake)
+include(cmake/conan.cmake)
+
+download_conan_provider()
+
+message("CMAKE_PROJECT_TOP_LEVEL_INCLUDES ${CMAKE_PROJECT_TOP_LEVEL_INCLUDES}")
+run_vcvarsall()
 
 project(
     ${MAIN_PROJECT_NAME}
@@ -19,16 +24,15 @@ project(
     HOMEPAGE_URL "https://example.com/"
     LANGUAGES CXX)
 
-include(cmake/common_options.cmake)
-include(options.cmake)
-include(dependencies.cmake)
-
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
 include(cmake/ccache.cmake)
 include(cmake/linker.cmake)
 include(cmake/ipo.cmake)
 include(cmake/coverage.cmake)
+
+include(options.cmake)
+include(dependencies.cmake)
 
 if(${MAIN_PROJECT_NAME}_ENABLE_CCACHE)
     enable_ccache()
