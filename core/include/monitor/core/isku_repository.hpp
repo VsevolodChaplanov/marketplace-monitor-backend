@@ -38,6 +38,21 @@ namespace mo::core {
             co_return co_await base_get<sku_model>::get(connection, statement, model_id);
         }
     };
+
+    net::awaitable<void> create_sku_table(sql::any_connection& connection) {
+        auto statement = co_await connection.async_prepare_statement(
+            R"(CREATE TABLE IF NOT EXISTS sku_model (
+    id BIGINT PRIMARY KEY,       -- Unique identifier
+    sku BIGINT NOT NULL UNIQUE,  -- SKU must be unique
+    url TEXT NOT NULL,           -- URL of the SKU
+    price DOUBLE NOT NULL,       -- Price of the SKU
+    CHECK (price >= 0)           -- Ensure price is non-negative
+);)",
+            net::use_awaitable);
+
+        boost::mysql::results result;
+        co_await connection.async_execute(statement.bind(), result, net::use_awaitable);
+    }
 } // namespace mo::core
 
 #endif // MARKETPLACEMONITOR_REPOSITORY_HPP

@@ -22,7 +22,7 @@ services:
     depends_on:
       - mysql  # Ensure MySQL starts before the app
 
-  db:
+  mysql:
     image: mysql:8.4
     container_name: db_container
     env_file: .env
@@ -37,6 +37,6 @@ services:
 volumes:
   db_data:
 
-networkds:
+networks:
   db:
     driver: bridge 
