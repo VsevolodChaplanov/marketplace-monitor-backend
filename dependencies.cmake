@@ -14,15 +14,26 @@ add_library(Boost::pfr ALIAS Boost::headers)
 add_library(Boost::core ALIAS Boost::headers)
 add_library(Boost::describe ALIAS Boost::headers)
 add_library(Boost::endian ALIAS Boost::headers)
-add_library(Boost::intrusive ALIAS Boost::headers)    
+add_library(Boost::intrusive ALIAS Boost::headers)
 add_library(Boost::mp11 ALIAS Boost::headers)
 add_library(Boost::optional ALIAS Boost::headers)
 add_library(Boost::throw_exception ALIAS Boost::headers)
 add_library(Boost::variant2 ALIAS Boost::headers)
 
 cpmaddpackage(
-    NAME boost_mysql
-    GITHUB_REPOSITORY boostorg/mysql
-    GIT_TAG boost-1.86.0
-    SYSTEM
-)
+    NAME
+    boost_compat
+    GITHUB_REPOSITORY
+    boostorg/compat
+    GIT_TAG
+    boost-1.87.0
+    SYSTEM)
+
+cpmaddpackage(
+    NAME
+    boost_mysql
+    GITHUB_REPOSITORY
+    boostorg/mysql
+    GIT_TAG
+    boost-1.87.0
+    SYSTEM)

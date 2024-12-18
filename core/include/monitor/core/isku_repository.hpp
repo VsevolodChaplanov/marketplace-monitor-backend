@@ -16,43 +16,16 @@ namespace mo::core {
     namespace net = boost::asio;
     namespace sql = boost::mysql;
 
-    template<typename model> struct base_get {
-        using result = sql::static_results<sql::pfr_by_name<model>>;
-        using statement = sql::statement;
+    using sql_sku_model_t = sql::static_results<sql::pfr_by_position<sku_model>>;
 
-        auto get(sql::any_connection& connection, const statement& query,
-                 id_t model_id) const -> net::awaitable<result> {
-            result result;
-            co_await connection.async_execute(query.bind(model_id), result, net::use_awaitable);
-            co_return result;
-        }
-    };
+    auto CORE_EXPORT create_sku_table(sql::pooled_connection& connection) -> net::awaitable<void>;
 
-    struct CORE_EXPORT base_sku_repository : private base_get<sku_model> {
-        using result = typename base_get<sku_model>::result;
+    auto CORE_EXPORT get_sku_model(sql::pooled_connection& connection, id_t id) -> net::awaitable<sql_sku_model_t>;
 
-        net::awaitable<result> get(sql::any_connection& connection, id_t model_id) const {
-            auto statement =
-                co_await connection.async_prepare_statement("SELECT * FROM sku WHERE id = ?", net::use_awaitable);
+    auto CORE_EXPORT insert_sku_model(sql::pooled_connection& connection, sku_model model) -> net::awaitable<id_t>;
 
-            co_return co_await base_get<sku_model>::get(connection, statement, model_id);
-        }
-    };
-
-    net::awaitable<void> create_sku_table(sql::any_connection& connection) {
-        auto statement = co_await connection.async_prepare_statement(
-            R"(CREATE TABLE IF NOT EXISTS sku_model (
-    id BIGINT PRIMARY KEY,       -- Unique identifier
-    sku BIGINT NOT NULL UNIQUE,  -- SKU must be unique
-    url TEXT NOT NULL,           -- URL of the SKU
-    price DOUBLE NOT NULL,       -- Price of the SKU
-    CHECK (price >= 0)           -- Ensure price is non-negative
-);)",
-            net::use_awaitable);
-
-        boost::mysql::results result;
-        co_await connection.async_execute(statement.bind(), result, net::use_awaitable);
-    }
+    auto CORE_EXPORT update_price_for_sku_model(sql::pooled_connection& connection, std::uint64_t sku,
+                                                double price) -> net::awaitable<sql_sku_model_t>;
 } // namespace mo::core
 
 #endif // MARKETPLACEMONITOR_REPOSITORY_HPP

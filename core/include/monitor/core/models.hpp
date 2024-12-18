@@ -4,6 +4,7 @@
 #include <boost/mysql/pfr.hpp>
 #include <boost/mysql/static_results.hpp>
 #include <cstdint>
+#include <monitor/utility/strong_type.hpp>
 
 namespace mo::core {
 
