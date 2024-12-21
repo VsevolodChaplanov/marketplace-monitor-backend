@@ -32,6 +32,10 @@ namespace mo::utility {
         auto operator->() const noexcept -> const T* { return std::addressof(value_); }
         auto operator->() noexcept -> T* { return std::addressof(value_); }
 
+        explicit(std::is_trivial_v<T>) constexpr operator const T &() const noexcept { return value_; }
+
+        explicit(std::is_trivial_v<T>) constexpr operator T&() noexcept { return value_; }
+
         friend constexpr auto operator<=>(const strong_type&, const strong_type&) noexcept = default;
 
         ~strong_type() = default;

@@ -1,9 +1,3 @@
-#include "boost/mysql.hpp"
-#include "boost/mysql/diagnostics.hpp"
-#include "boost/mysql/error_with_diagnostics.hpp"
-#include "boost/mysql/with_diagnostics.hpp"
-#include "monitor/core/isku_repository.hpp"
-#include "monitor/core/models.hpp"
 #include <boost/asio/awaitable.hpp>
 #include <boost/asio/co_spawn.hpp>
 #include <boost/asio/detached.hpp>
@@ -12,15 +6,21 @@
 #include <boost/asio/strand.hpp>
 #include <boost/asio/thread_pool.hpp>
 #include <boost/asio/use_awaitable.hpp>
+#include <boost/mysql.hpp>
 #include <boost/mysql/any_address.hpp>
 #include <boost/mysql/connection_pool.hpp>
+#include <boost/mysql/diagnostics.hpp>
+#include <boost/mysql/error_with_diagnostics.hpp>
 #include <boost/mysql/pool_params.hpp>
+#include <boost/mysql/with_diagnostics.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <cstdlib>
 #include <fmt/base.h>
 #include <iostream>
 #include <memory>
 #include <monitor/core/program_options.hpp>
+#include <monitor/models/sku_model.hpp>
+#include <monitor/repository/isku_repository.hpp>
 #include <ranges>
 #include <string_view>
 #include <thread>
@@ -76,45 +76,6 @@ int main(int argc, const char* const argv[]) {
         th_pool.stop();
         fmt::println("stop thread_pool", signal);
     });
-
-    // boost::asio::co_spawn(
-    //     strand,
-    //     [connection_pool]() -> boost::asio::awaitable<void> {
-    //         fmt::println("getting connection to create table");
-    //         auto conn = co_await connection_pool->async_get_connection(boost::asio::use_awaitable);
-    //         fmt::println("got connection");
-
-    //         fmt::println("creating table");
-    //         co_await mo::core::create_sku_table(conn);
-    //         fmt::println("created table");
-
-    //         conn.return_without_reset();
-    //     },
-    //     boost::asio::detached);
-
-    boost::asio::co_spawn(
-        strand,
-        [connection_pool]() -> boost::asio::awaitable<void> {
-            fmt::println("do select");
-
-            fmt::println("getting connection");
-            auto conn = co_await connection_pool->async_get_connection(
-                boost::mysql::with_diagnostics(boost::asio::use_awaitable));
-            fmt::println("get connection");
-
-            mo::core::sql_sku_model_t result;
-            co_await conn->async_execute(boost::mysql::with_params("SELECT id, sku, url, price FROM sku_model"),
-                                         result, //
-                                         boost::mysql::with_diagnostics(boost::asio::use_awaitable));
-
-            fmt::println("executed connection");
-
-            for (const auto& row : result.rows()) {
-                fmt::println("{}", row.sku);
-            }
-            conn.return_without_reset();
-        },
-        boost::asio::detached);
 
     boost::asio::io_context::work guard{ctx};
 
