@@ -60,6 +60,8 @@ class ProjectRecipe(ConanFile):
         self.requires("boost/1.86.0", transitive_headers=True)
         self.requires("fmt/11.0.2", transitive_headers=True)
         self.requires("spdlog/1.15.0")
+        self.requires("grpc/1.67.1")
+        
         self.test_requires("catch2/3.7.1")
 
     def config_options(self):

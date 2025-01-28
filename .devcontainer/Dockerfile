@@ -22,7 +22,7 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
     software-properties-common wget apt-utils file zip \
     openssh-client gpg-agent socat rsync \
-    make ninja-build git lcov gcovr valgrind && \
+    make git lcov gcovr valgrind && \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt update -qq && apt install python3 python3-pip python3-dev -y && rm -rf /var/lib/apt/lists/*
@@ -142,6 +142,14 @@ RUN CC=clang-${LLVM_VER} CXX=clang++-${LLVM_VER} cmake -S ${IWYU_SRC} \
     -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${LLVM_VER} && \
     cmake --build ${IWYU_BUILD} --parallel 4 && \
     cmake --install ${IWYU_BUILD}
+
+ENV NINJA_SOURCE /home/ninja
+RUN git clone https://github.com/ninja-build/ninja.git ${NINJA_SOURCE}
+RUN CC=clang-${LLVM_VER} CXX=clang++-${LLVM_VER} cmake -S ${NINJA_SOURCE} \
+    -B ${NINJA_SOURCE}/build -D CMAKE_BUILD_TYPE=Release && \
+    cmake --build ${NINJA_SOURCE}/build --parallel 4 && \
+    cmake --install ${NINJA_SOURCE}/build
+
 
 # Per https://github.com/include-what-you-use/include-what-you-use#how-to-install:
 # `You need to copy the Clang include directory to the expected location before

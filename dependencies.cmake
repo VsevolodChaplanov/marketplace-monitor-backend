@@ -2,6 +2,7 @@ find_package(fmt 11.0.2 CONFIG REQUIRED)
 find_package(spdlog 1.15.0 CONFIG REQUIRED)
 find_package(OpenSSL 3.3.2 CONFIG REQUIRED)
 find_package(Boost 1.86.0 CONFIG REQUIRED)
+find_package(gRPC REQUIRED)
 
 include(cmake/get-cpm.cmake)
 
@@ -37,3 +38,14 @@ cpmaddpackage(
     GIT_TAG
     boost-1.87.0
     SYSTEM)
+
+cpmaddpackage(
+    NAME
+    asio-grpc
+    GITHUB_REPOSITORY
+    Tradias/asio-grpc
+    GIT_TAG
+    v3.4.1
+    SYSTEM)
+
+include(FetchContent)

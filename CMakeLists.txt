@@ -41,6 +41,7 @@ endif()
 enable_ipo()
 
 add_subdirectory(utility)
+add_subdirectory(service)
 add_subdirectory(core)
 
 add_subdirectory(app)
