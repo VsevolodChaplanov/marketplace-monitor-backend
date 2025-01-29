@@ -14,7 +14,6 @@ include(cmake/conan.cmake)
 
 download_conan_provider()
 
-message("CMAKE_PROJECT_TOP_LEVEL_INCLUDES ${CMAKE_PROJECT_TOP_LEVEL_INCLUDES}")
 run_vcvarsall()
 
 project(
