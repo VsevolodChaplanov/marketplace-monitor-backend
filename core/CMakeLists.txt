@@ -68,7 +68,8 @@ generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
 # ---- Collect sources
 
 file(GLOB LIBRARY_INCLUDES ${PROJECT_SOURCE_DIR}/include/${MAIN_PROJECT_NAME}/${PROJECT_NAME}/*.hpp)
-file(GLOB LIBRARY_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB LIBRARY_SOURCES ${PROJECT_SOURCE_DIR}/src/repository/*.cpp ${PROJECT_SOURCE_DIR}/src/repository/impl/*.cpp
+     ${PROJECT_SOURCE_DIR}/src/core/*.cpp)
 
 # ---- Set target sources
 

@@ -13,7 +13,8 @@
                 "dev-mode"
             ],
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "BUILD_SHARED_LIBS": "OFF"
             }
         },
         {
@@ -91,9 +92,9 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_C_COMPILER": "cl.exe",
                 "CMAKE_CXX_COMPILER": "cl.exe",
-                "monitor_ENABLE_CLANGTIDY_ON_BUILD" : "OFF",
-                "monitor_ENABLE_CPPCHECK_ON_BUILD" : "OFF",
-                "monitor_ENABLE_IWYU_ON_BUILD" : "OFF",
+                "monitor_ENABLE_CLANGTIDY_ON_BUILD": "OFF",
+                "monitor_ENABLE_CPPCHECK_ON_BUILD": "OFF",
+                "monitor_ENABLE_IWYU_ON_BUILD": "OFF",
                 "monitor_BUILD_TESTS": "ON"
             }
         },

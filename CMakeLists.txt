@@ -14,7 +14,6 @@ include(cmake/conan.cmake)
 
 download_conan_provider()
 
-message("CMAKE_PROJECT_TOP_LEVEL_INCLUDES ${CMAKE_PROJECT_TOP_LEVEL_INCLUDES}")
 run_vcvarsall()
 
 project(
@@ -41,6 +40,8 @@ endif()
 enable_ipo()
 
 add_subdirectory(utility)
+add_subdirectory(domain)
+add_subdirectory(service)
 add_subdirectory(core)
 
 add_subdirectory(app)
