@@ -48,4 +48,8 @@ cpmaddpackage(
     v3.4.1
     SYSTEM)
 
+find_package(boost_compat REQUIRED)
+find_package(boost_mysql REQUIRED)
+find_package(asio-grpc REQUIRED)
+
 include(FetchContent)
