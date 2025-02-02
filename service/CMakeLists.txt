@@ -11,6 +11,7 @@ project(service CXX)
 
 add_library(${PROJECT_NAME}-common INTERFACE)
 add_library(Monitor::ServiceCommon ALIAS ${PROJECT_NAME}-common)
+
 target_link_libraries(${PROJECT_NAME}-common INTERFACE asio-grpc::asio-grpc grpc::grpc Boost::headers)
 
 # FetchContent for monitor-protos because it is a submodule and rule how to find it can not be modified directly
