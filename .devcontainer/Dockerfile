@@ -1,4 +1,4 @@
-ARG VARIANT="jammy"
+ARG VARIANT="noble"
 FROM ubuntu:${VARIANT}
 
 # Restate the variant to use it later on in the llvm and cmake installations
@@ -26,10 +26,6 @@ RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt update -qq && apt install python3 python3-pip python3-dev -y && rm -rf /var/lib/apt/lists/*
-
-# boost has build issues with numpy2.0
-RUN pip3 install conan numpy==1.26 codespell cmakelang
-
 
 # User-settable versions:
 ARG GCC_VER="13"
@@ -127,6 +123,13 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
     doxygen graphviz ccache cppcheck && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# Install optional dependencies
+RUN apt-get update -qq && export DEBIAN_FRONTEND=noninteractive && \
+    apt-get install -y --no-install-recommends pipx && \
+    pipx ensurepath && \
     rm -rf /var/lib/apt/lists/*
 
 # Install include-what-you-use

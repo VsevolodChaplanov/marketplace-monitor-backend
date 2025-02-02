@@ -1,93 +1,100 @@
-#include <boost/asio/awaitable.hpp>
-#include <boost/asio/co_spawn.hpp>
-#include <boost/asio/detached.hpp>
-#include <boost/asio/io_context.hpp>
-#include <boost/asio/signal_set.hpp>
-#include <boost/asio/strand.hpp>
-#include <boost/asio/thread_pool.hpp>
-#include <boost/asio/use_awaitable.hpp>
-#include <boost/mysql.hpp>
-#include <boost/mysql/any_address.hpp>
-#include <boost/mysql/connection_pool.hpp>
-#include <boost/mysql/diagnostics.hpp>
-#include <boost/mysql/error_with_diagnostics.hpp>
-#include <boost/mysql/pool_params.hpp>
-#include <boost/mysql/with_diagnostics.hpp>
-#include <boost/program_options/options_description.hpp>
-#include <cstdlib>
-#include <fmt/base.h>
-#include <iostream>
-#include <memory>
-#include <monitor/core/program_options.hpp>
-#include <monitor/models/sku_model.hpp>
-#include <monitor/repository/isku_repository.hpp>
-#include <ranges>
-#include <string_view>
-#include <thread>
+// #include <boost/asio/awaitable.hpp>
+// #include <boost/asio/co_spawn.hpp>
+// #include <boost/asio/detached.hpp>
+// #include <boost/asio/io_context.hpp>
+// #include <boost/asio/signal_set.hpp>
+// #include <boost/asio/strand.hpp>
+// #include <boost/asio/thread_pool.hpp>
+// #include <boost/asio/use_awaitable.hpp>
+// #include <boost/mysql.hpp>
+// #include <boost/mysql/any_address.hpp>
+// #include <boost/mysql/connection_pool.hpp>
+// #include <boost/mysql/diagnostics.hpp>
+// #include <boost/mysql/error_with_diagnostics.hpp>
+// #include <boost/mysql/pool_params.hpp>
+// #include <boost/mysql/with_diagnostics.hpp>
+// #include <boost/program_options/options_description.hpp>
+// #include <cstdlib>
+// #include <fmt/base.h>
+// #include <iostream>
+// #include <memory>
+// #include <monitor/core/program_options.hpp>
+// #include <monitor/models/sku_model.hpp>
+// #include <monitor/repository/isku_repository.hpp>
+// #include <ranges>
+// #include <string_view>
+// #include <thread>
 
-int main(int argc, const char* const argv[]) {
-    namespace po = boost::program_options;
+#include <span>
 
-    po::options_description desc("Allowed options");
-    desc.add_options()("help,h", "Show help message");
+import app;
 
-    mo::core::add_connection_options(desc);
+auto main(int argc, const char* const argv[]) -> int {
+    program_options::options options =
+        program_options::parse_command_line(std::span{argv, static_cast<std::size_t>(argc)});
 
-    const auto vm = mo::core::parse_command_line(std::span{argv, static_cast<std::size_t>(argc)}, desc);
+    // namespace po = boost::program_options;
 
-    if (constexpr std::string_view help = "help"; vm.contains(help.data())) {
-        std::cout << desc << std::endl;
-        return EXIT_SUCCESS;
-    }
+    // po::options_description desc("Allowed options");
+    // desc.add_options()("help,h", "Show help message");
 
-    const auto config = mo::core::parse_connection_data(vm);
+    // mo::core::add_connection_options(desc);
 
-    boost::asio::io_context ctx{static_cast<int>(std::thread::hardware_concurrency())};
-    boost::asio::thread_pool th_pool{std::thread::hardware_concurrency()};
+    // const auto vm = mo::core::parse_command_line(std::span{argv, static_cast<std::size_t>(argc)}, desc);
 
-    boost::mysql::pool_params parameters{
-        boost::mysql::host_and_port{config.host, static_cast<unsigned short>(config.port)}, config.username,
-        config.password, config.database};
-    parameters.thread_safe = true;
-    parameters.initial_size = 2;
+    // if (constexpr std::string_view help = "help"; vm.contains(help.data())) {
+    //     std::cout << desc << std::endl;
+    //     return EXIT_SUCCESS;
+    // }
 
-    const auto connection_pool = std::make_shared<boost::mysql::connection_pool>(ctx, std::move(parameters));
+    // const auto config = mo::core::parse_connection_data(vm);
 
-    // A signal_set allows us to intercept SIGINT and SIGTERM and
-    // exit gracefully
-    boost::asio::signal_set signals{ctx.get_executor(), SIGINT, SIGTERM};
+    // boost::asio::io_context ctx{static_cast<int>(std::thread::hardware_concurrency())};
+    // boost::asio::thread_pool th_pool{std::thread::hardware_concurrency()};
 
-    connection_pool->async_run(boost::asio::detached);
+    // boost::mysql::pool_params parameters{
+    //     boost::mysql::host_and_port{config.host, static_cast<unsigned short>(config.port)}, config.username,
+    //     config.password, config.database};
+    // parameters.thread_safe = true;
+    // parameters.initial_size = 2;
 
-    auto strand = boost::asio::make_strand(ctx.get_executor());
+    // const auto connection_pool = std::make_shared<boost::mysql::connection_pool>(ctx, std::move(parameters));
 
-    // Capture SIGINT and SIGTERM to perform a clean shutdown
-    signals.async_wait([connection_pool, &th_pool, &ctx](boost::system::error_code, int signal) {
-        fmt::println("capture {}", signal);
+    // // A signal_set allows us to intercept SIGINT and SIGTERM and
+    // // exit gracefully
+    // boost::asio::signal_set signals{ctx.get_executor(), SIGINT, SIGTERM};
 
-        // Cancel the pool. This will cause async_run to complete.
-        connection_pool->cancel();
-        fmt::println("cancelled thread pool", signal);
+    // connection_pool->async_run(boost::asio::detached);
 
-        // Stop the execution context. This will cause main to exit
-        ctx.stop();
-        fmt::println("stop io_context", signal);
+    // auto strand = boost::asio::make_strand(ctx.get_executor());
 
-        th_pool.stop();
-        fmt::println("stop thread_pool", signal);
-    });
+    // // Capture SIGINT and SIGTERM to perform a clean shutdown
+    // signals.async_wait([connection_pool, &th_pool, &ctx](boost::system::error_code, int signal) {
+    //     fmt::println("capture {}", signal);
 
-    boost::asio::io_context::work guard{ctx};
+    //     // Cancel the pool. This will cause async_run to complete.
+    //     connection_pool->cancel();
+    //     fmt::println("cancelled thread pool", signal);
 
-    for (const auto& i : std::views::iota(unsigned{0}, std::thread::hardware_concurrency())) {
-        boost::asio::post(th_pool, [&ctx] { ctx.run(); });
-    }
+    //     // Stop the execution context. This will cause main to exit
+    //     ctx.stop();
+    //     fmt::println("stop io_context", signal);
 
-    th_pool.attach();
+    //     th_pool.stop();
+    //     fmt::println("stop thread_pool", signal);
+    // });
 
-    fmt::println("joining threads");
+    // boost::asio::io_context::work guard{ctx};
 
-    th_pool.join();
+    // for (const auto& i : std::views::iota(unsigned{0}, std::thread::hardware_concurrency())) {
+    //     boost::asio::post(th_pool, [&ctx] { ctx.run(); });
+    // }
 
-    fmt::println("joined threads");
+    // th_pool.attach();
+
+    // fmt::println("joining threads");
+
+    // th_pool.join();
+
+    // fmt::println("joined threads");
 }
