@@ -7,10 +7,34 @@
     },
     "configurePresets": [
         {
+            "name": "pass-conan",
+            "hidden": true,
+            "cacheVariables": {
+                "CONAN_COMMAND": "${sourceDir}/.venv/bin/conan"
+            }
+        },
+        {
+            "name": "enable-testing",
+            "hidden": true,
+            "cacheVariables": {
+                "BUILD_TESTING": "ON"
+            }
+        },
+        {
+            "name": "enable-examples",
+            "hidden": true,
+            "cacheVariables": {
+                "BUILD_EXAMPLES": "ON"
+            }
+        },
+        {
             "name": "dev-common",
             "hidden": true,
             "inherits": [
-                "dev-mode"
+                "pass-conan",
+                "dev-mode",
+                "enable-testing",
+                "enable-examples"
             ],
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
@@ -30,8 +54,7 @@
                 "dev-common",
                 "ci-linux",
                 "cppcheck",
-                "clang-tidy",
-                "iwyu"
+                "clang-tidy"
             ],
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"

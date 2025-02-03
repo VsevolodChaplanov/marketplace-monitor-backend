@@ -41,7 +41,7 @@ enable_ipo()
 
 add_subdirectory(utility)
 add_subdirectory(domain)
-add_subdirectory(repository)
+# add_subdirectory(repository)
 add_subdirectory(service)
 add_subdirectory(core)
 

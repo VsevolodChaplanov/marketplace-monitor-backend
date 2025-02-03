@@ -1,13 +1,15 @@
 module;
 
-#include <boost/mysql/datetime.hpp>
+#include <chrono>
 #include <cstdint>
 #include <string>
 
 export module domain:item;
 
 namespace domain {
-    export using datetime = boost::mysql::datetime;
+    using clock = std::chrono::system_clock;
+
+    export using time_point_t = clock::time_point;
     export using id_t = std::uint64_t;
 
     export struct sku_model final {
@@ -16,11 +18,15 @@ namespace domain {
         std::string url;
         double price;
 
-        datetime created_at{datetime::now()};
-        datetime updated_at{datetime::now()};
+        time_point_t created_at{clock::now()};
+        time_point_t updated_at{clock::now()};
 
-        constexpr friend auto operator<=>(const sku_model& self, const sku_model& other) noexcept {
-            return self.id <=> other.id;
+        constexpr friend auto operator==(const sku_model& self, const sku_model& other) noexcept {
+            return self.id == other.id;
+        }
+
+        constexpr friend auto operator!=(const sku_model& self, const sku_model& other) noexcept {
+            return !(self == other);
         }
     };
 } // namespace domain

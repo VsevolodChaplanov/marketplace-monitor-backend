@@ -1,7 +1,7 @@
 # List project customization options here. Development options like static analysis and coverage are not included.
 
 option(${MAIN_PROJECT_NAME}_BUILD_EXAMPLES "Enable coverage info on default" OFF)
-option(${MAIN_PROJECT_NAME}_BUILD_TESTS "Enable coverage info on default" OFF)
+option(${MAIN_PROJECT_NAME}_BUILD_TESTS "Enable coverage info on default" ${BUILD_TESTING})
 
 option(${MAIN_PROJECT_NAME}_ENABLE_COVERAGE "Enable coverage info on default" OFF)
 

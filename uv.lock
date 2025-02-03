@@ -207,26 +207,24 @@ wheels = [
 name = "marketplace-monitor"
 version = "0.1.0"
 source = { virtual = "." }
-dependencies = [
-    { name = "cmakelang" },
-    { name = "codespell" },
-    { name = "conan" },
-]
 
 [package.dev-dependencies]
 dev = [
+    { name = "cmakelang" },
+    { name = "codespell" },
+    { name = "conan" },
     { name = "ipdb" },
 ]
 
 [package.metadata]
-requires-dist = [
+
+[package.metadata.requires-dev]
+dev = [
     { name = "cmakelang", specifier = ">=0.6.13" },
     { name = "codespell", specifier = ">=2.4.1" },
     { name = "conan", specifier = ">=2.12.1" },
+    { name = "ipdb", specifier = ">=0.13.13" },
 ]
-
-[package.metadata.requires-dev]
-dev = [{ name = "ipdb", specifier = ">=0.13.13" }]
 
 [[package]]
 name = "markupsafe"

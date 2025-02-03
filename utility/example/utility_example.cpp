@@ -1,5 +1,8 @@
 #include <iostream>
-#include <monitor/utility/static_string.hpp>
+
+import Utility;
+
+using utility::operator""_fs;
 
 auto main() -> int {
     constexpr auto hello_world = "hello world"_fs;

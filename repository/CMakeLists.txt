@@ -14,7 +14,6 @@ project(
     LANGUAGES CXX)
 
 include(cmake/options.cmake)
-include(cmake/dependencies.cmake)
 
 # ---- Project options target
 
@@ -86,7 +85,7 @@ target_link_libraries(
            spdlog::spdlog
            Boost::headers
            openssl::openssl
-           Boost::mysql
+           $<BUILD_INTERFACE:Boost::mysql>
     PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}-pch> $<BUILD_INTERFACE:${PROJECT_NAME}-options>)
 
 # ---- Configure linker

@@ -1,7 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
-#include <monitor/utility/static_string.hpp>
 #include <string>
 #include <string_view>
+
+import utility;
+
+using utility::operator ::""_fs;
 
 TEST_CASE("static string class unit tests") {
     using namespace std::literals::string_literals;

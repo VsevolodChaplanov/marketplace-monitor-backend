@@ -8,27 +8,28 @@ include(../cmake/sanitizers.cmake)
 include(../cmake/static-analyzers.cmake)
 include(../cmake/lint-targets.cmake)
 
+set(PARENT_PROJECT_NAME ${PROJECT_NAME})
+
 project(
     utility
-    VERSION
-        ${${MAIN_PROJECT_NAME}_VERSION_MAJOR}.${${MAIN_PROJECT_NAME}_VERSION_MINOR}.${${MAIN_PROJECT_NAME}_VERSION_PATCH}
+    VERSION ${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH}
     LANGUAGES CXX)
-    
+
 include(cmake/options.cmake)
 include(cmake/dependencies.cmake)
 
 # ---- Project options target
 
-add_library(${PROJECT_NAME}_options INTERFACE)
+add_library(${PROJECT_NAME}-options INTERFACE)
 
 # ---- Set compile features
 
-target_compile_features(${PROJECT_NAME}_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+target_link_libraries(${PROJECT_NAME}-options INTERFACE ${PARENT_PROJECT_NAME}-options)
 
 # ---- Add sanitizers
 
 target_sanitizers(
-    ${PROJECT_NAME}_options
+    ${PROJECT_NAME}-options
     SANITIZER_ADDRESS
     ${${PROJECT_NAME}_SANITIZER_ADDRESS}
     SANITIZER_LEAK
@@ -42,66 +43,84 @@ target_sanitizers(
 
 # ---- Declare library precompiled headers
 
-# ---- Not needed for a library of type INTERFACE
+add_library(${PROJECT_NAME}-pch INTERFACE) # declare library if pch is off prevent install rule error for unknown target
+
+if(${PROJECT_NAME}_ENABLE_PCH)
+    target_precompile_headers(${PROJECT_NAME}-pch INTERFACE <string> <vector>)
+    target_link_libraries(${PROJECT_NAME}-pch INTERFACE ${PROJECT_NAME}-options)
+endif()
 
 # ---- Declare library ----
 
-add_library(${PROJECT_NAME} INTERFACE)
-add_library(${MAIN_PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-
-# ---- Generate export header
-
-# ---- Not needed for a library of type INTERFACE
+if(${PROJECT_NAME}_BUILD_SHARED_LIBS)
+    add_library(${PROJECT_NAME} SHARED)
+else()
+    add_library(${PROJECT_NAME} SHARED)
+endif()
+add_library(${PARENT_PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # ---- Collect sources
 
-file(GLOB LIBRARY_INCLUDES ${PROJECT_SOURCE_DIR}/include/${MAIN_PROJECT_NAME}/${PROJECT_NAME}/*.hpp)
+file(GLOB _utility_cxx_modules ${PROJECT_SOURCE_DIR}/module/${PROJECT_NAME}/*.cppm)
 
 # ---- Set target sources
 
-target_sources(${PROJECT_NAME} PUBLIC FILE_SET HEADERS BASE_DIRS ${PROJECT_SOURCE_DIR}/include FILES
-                                      ${LIBRARY_INCLUDES})
-
-# ---- Set target include dirs
-
-target_include_directories(${PROJECT_NAME} ${warning_guard} INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                                                                      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_sources(
+    ${PROJECT_NAME}
+    PUBLIC FILE_SET
+           ${PROJECT_NAME}_module
+           TYPE
+           CXX_MODULES
+           BASE_DIRS
+           ${PROJECT_SOURCE_DIR}/module
+           FILES
+           ${_utility_cxx_modules})
 
 # ---- Add libraries
 
-target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}_options)
+target_link_libraries(
+    ${PROJECT_NAME}
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_NAME}-options>
+    PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}-pch>)
+
+# ---- Export
+
+export(
+    TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-options ${PROJECT_NAME}-pch
+    NAMESPACE ${PARENT_PROJECT_NAME}::
+    FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 
 # ---- Configure linker
 
 target_configure_linker(${PROJECT_NAME})
 
-# ---- Collect all sources for static analysis
-
-set(ALL_SOURCE_FILES ${LIBRARY_INCLUDES})
-
 # ---- Clang-tidy target
 
-target_clangtidy(${PROJECT_NAME} "${ALL_SOURCE_FILES}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}" USE_ON_BUILD
-                 "${PROJECT_NAME}_ENABLE_CLANGTIDY_ON_BUILD")
+if(${PROJECT_NAME}_ENABLE_CLANGTIDY_ON_BUILD)
+    target_clangtidy(${PROJECT_NAME} "${_utility_cxx_modules}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}")
+endif()
 
 # ---- Cppcheck target
 
-target_cppcheck(${PROJECT_NAME} "${ALL_SOURCE_FILES}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}" USE_ON_BUILD
-                "${PROJECT_NAME}_ENABLE_CPPCHECK_ON_BUILD")
+if(${PROJECT_NAME}_ENABLE_CPPCHECK_ON_BUILD)
+    target_cppcheck(${PROJECT_NAME} "${_utility_cxx_modules}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}")
+endif()
 
 # ---- IWYU target
 
-target_include_what_you_use(${PROJECT_NAME} "${ALL_SOURCE_FILES}" USE_ON_BUILD "${PROJECT_NAME}_ENABLE_IWYU_ON_BUILD")
+if(${PROJECT_NAME}_ENABLE_IWYU_ON_BUILD)
+    target_include_what_you_use(${PROJECT_NAME} "${_utility_cxx_modules}")
+endif()
 
 # ---- Clang-format target
 
-target_clang_format(${PROJECT_NAME} "${ALL_SOURCE_FILES}")
+target_clang_format(${PROJECT_NAME} "${_utility_cxx_modules}")
 
 # ---- Doxygen
 
 if(${PROJECT_NAME}_BUILD_DOCS)
     include(../cmake/docs.cmake)
-    wrap_doxygen_add_docs(${PROJECT_NAME} SOURCE_DIRS "${ALL_SOURCE_FILES}" OUTPUT "doxygen")
+    wrap_doxygen_add_docs(${PROJECT_NAME} SOURCE_DIRS "${_utility_cxx_modules}" OUTPUT "doxygen")
 endif()
 
 # ---- Build examples

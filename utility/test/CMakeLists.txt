@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
+set(PARENT_PROJECT_NAME ${PROJECT_NAME})
+
 project(utility-tests LANGUAGES CXX)
 
 include(../../cmake/project-is-top-level.cmake)
@@ -23,20 +25,11 @@ include(Catch)
 file(GLOB TEST_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 # ---- Tests ----
-
 add_executable(${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${MAIN_PROJECT_NAME}::utility Catch2::Catch2WithMain)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PARENT_PROJECT_NAME} Catch2::Catch2WithMain)
+
 target_sources(${PROJECT_NAME} PRIVATE ${TEST_SOURCES})
-
-# ---- Static analyzers for test target
-
-option(LINT_TESTS "enable static analyzers for tests" OFF)
-
-if(LINT_TESTS)
-    target_cppcheck(${PROJECT_NAME} "${TEST_SOURCES}")
-    target_clangtidy(${PROJECT_NAME} "${TEST_SOURCES}")
-    target_include_what_you_use(${PROJECT_NAME} "${TEST_SOURCES}")
-endif()
 
 # ---- Discover Catch2 tests
 

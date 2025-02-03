@@ -1,13 +1,16 @@
 module;
 
-#include <boost/mysql/datetime.hpp>
-#include <boost/mysql/pfr.hpp>
+#include <chrono>
+#include <cstdint>
+#include <string>
 
 export module domain:user;
 
 namespace domain {
 
-    export using datetime = boost::mysql::datetime;
+    using clock = std::chrono::system_clock;
+
+    export using time_point_t = clock::time_point;
     export using id_t = std::uint64_t;
 
     export struct user_model final {
@@ -16,20 +19,20 @@ namespace domain {
         std::string login;
         std::string password_hash;
 
-        datetime created_at;
-        datetime updated_at;
+        time_point_t created_at{clock::now()};
+        time_point_t updated_at{clock::now()};
 
         bool is_active{true};
         bool is_accepted{false};
     };
 
     export struct telegram_user_model final {
-        id_t id;
+        id_t id{0};
 
-        id_t telegram_id;
-        id_t user_fk;
+        id_t telegram_id{0};
+        id_t user_fk{0};
 
-        datetime created_at;
-        datetime updated_at;
+        time_point_t created_at{clock::now()};
+        time_point_t updated_at{clock::now()};
     };
 } // namespace domain

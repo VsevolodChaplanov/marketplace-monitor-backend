@@ -72,7 +72,7 @@ add_library(${PROJECT_NAME})
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/generated/exports/exports.hpp)
 
 list(APPEND _items_service_generated_headers ${PROJECT_BINARY_DIR}/include/generated/exports/exports.hpp)
-message("${_items_service_generated_headers}")
+
 target_sources(
     ${PROJECT_NAME}
     PUBLIC FILE_SET
@@ -128,19 +128,6 @@ endif()
 if(${PROJECT_NAME}_BUILD_DOCS)
     include(../cmake/docs.cmake)
     wrap_doxygen_add_docs(${PROJECT_NAME} SOURCE_DIRS "${_items_service_protos}" OUTPUT "doxygen")
-endif()
-
-# ---- Build examples
-
-if(${PROJECT_NAME}_BUILD_EXAMPLES)
-    add_subdirectory(example)
-endif()
-
-# ---- Build tests
-
-include(CTest)
-if(BUILD_TESTING AND ${PROJECT_NAME}_BUILD_TESTS)
-    add_subdirectory(test)
 endif()
 
 # ---- Configure install rules

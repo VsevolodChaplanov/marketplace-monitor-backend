@@ -5,9 +5,10 @@ include(GNUInstallDirs)
 set(package ${PROJECT_NAME})
 
 install(
-    TARGETS ${package} ${package}_options
-    EXPORT ${package}Targets
-    PUBLIC_HEADER FILE_SET HEADERS COMPONENT ${package}_Development)
+    TARGETS ${package}
+    EXPORT ${package}Targets            
+        FILE_SET ${PROJECT_NAME}_module
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/c++/modules/${package})
 
 install(IMPORTED_RUNTIME_ARTIFACTS)
 install(RUNTIME_DEPENDENCY_SET ${package}_Dependency)

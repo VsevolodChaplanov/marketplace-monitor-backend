@@ -54,8 +54,6 @@ file(GLOB _domain_cxx_modules ${PROJECT_SOURCE_DIR}/module/domain/*.cppm)
 
 target_sources(${PROJECT_NAME} PUBLIC FILE_SET ${PROJECT_NAME}_module TYPE CXX_MODULES FILES ${_domain_cxx_modules})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Boost::mysql)
-
 # ---- Configure linker
 
 target_configure_linker(${PROJECT_NAME})
@@ -90,19 +88,6 @@ endif()
 if(${PROJECT_NAME}_BUILD_DOCS)
     include(../cmake/docs.cmake)
     wrap_doxygen_add_docs(${PROJECT_NAME} SOURCE_DIRS "${_domain_cxx_modules}" OUTPUT "doxygen")
-endif()
-
-# ---- Build examples
-
-if(${PROJECT_NAME}_BUILD_EXAMPLES)
-    add_subdirectory(example)
-endif()
-
-# ---- Build tests
-
-include(CTest)
-if(BUILD_TESTING AND ${PROJECT_NAME}_BUILD_TESTS)
-    add_subdirectory(test)
 endif()
 
 # ---- Configure install rules
