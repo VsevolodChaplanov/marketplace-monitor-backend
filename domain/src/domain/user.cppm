@@ -4,6 +4,8 @@ module;
 #include <cstdint>
 #include <string>
 
+#include <domain/exports/exports.hpp>
+
 export module domain:user;
 
 namespace domain {
@@ -13,7 +15,7 @@ namespace domain {
     export using time_point_t = clock::time_point;
     export using id_t = std::uint64_t;
 
-    export struct user_model final {
+    export struct DOMAIN_EXPORT user_model final {
         id_t id;
 
         std::string login;
@@ -26,7 +28,7 @@ namespace domain {
         bool is_accepted{false};
     };
 
-    export struct telegram_user_model final {
+    export struct DOMAIN_EXPORT telegram_user_model final {
         id_t id{0};
 
         id_t telegram_id{0};

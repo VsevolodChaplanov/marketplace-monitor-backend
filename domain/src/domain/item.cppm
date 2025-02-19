@@ -4,6 +4,8 @@ module;
 #include <cstdint>
 #include <string>
 
+#include <domain/exports/exports.hpp>
+
 export module domain:item;
 
 namespace domain {
@@ -12,7 +14,7 @@ namespace domain {
     export using time_point_t = clock::time_point;
     export using id_t = std::uint64_t;
 
-    export struct sku_model final {
+    export struct DOMAIN_EXPORT sku_model final {
         id_t id{0};
         std::uint64_t sku{0};
         std::string url;

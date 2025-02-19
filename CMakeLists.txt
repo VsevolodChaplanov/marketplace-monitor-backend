@@ -43,9 +43,9 @@ add_subdirectory(utility)
 add_subdirectory(domain)
 # add_subdirectory(repository)
 add_subdirectory(service)
-add_subdirectory(core)
+# add_subdirectory(core)
 
-add_subdirectory(app)
+# add_subdirectory(app)
 
 # ---- Target to link with all library modules
 

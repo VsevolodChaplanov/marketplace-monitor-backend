@@ -4,7 +4,7 @@
 
 import utility;
 
-using utility::operator ::""_fs;
+using utility::literals::operator""_fs;
 
 TEST_CASE("static string class unit tests") {
     using namespace std::literals::string_literals;

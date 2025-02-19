@@ -28,14 +28,10 @@ export namespace utility {
 
         template<char... Data> constexpr explicit static_string() noexcept : m_data({Data...}) {}
 
-        constexpr explicit static_string(const char* const data, std::integral_constant<std::size_t, N>) noexcept {
-            std::ranges::copy_n(data, N, begin());
-        }
-
         template<std::input_iterator TIt, std::sentinel_for<TIt> TS>
         constexpr explicit static_string(TIt begin, TS end) : m_data(begin, end) {}
 
-        constexpr auto empty() const noexcept -> bool { return N == 0; }
+        [[nodiscard]] constexpr auto empty() const noexcept -> bool { return N == 0; }
 
         constexpr auto data() const noexcept { return m_data.data(); }
 
@@ -53,9 +49,9 @@ export namespace utility {
 
         constexpr auto end() noexcept { return m_data.end(); }
 
-        constexpr auto view() const noexcept -> std::string_view { return {data(), N}; }
+        [[nodiscard]] constexpr auto view() const noexcept -> std::string_view { return {data(), N}; }
 
-        constexpr auto string() const -> std::string { return std::string(begin(), begin() + N); }
+        [[nodiscard]] constexpr auto string() const -> std::string { return std::string(begin(), begin() + N); }
 
         constexpr explicit operator std::string_view() const noexcept { return view(); }
 
@@ -65,11 +61,15 @@ export namespace utility {
 
         constexpr ~static_string() noexcept = default;
 
-        std::array<char, N + 1> m_data{};
+        std::array<char, N + 1> m_data{}; // NOLINT misc-non-private-member-variables-in-classes
     };
 
-    template<static_string VString> consteval auto operator""_fs() noexcept { return VString; }
+    namespace literals {
+        // NOLINTNEXTLINE misc-use-internal-linkage
+        template<static_string VString> consteval auto operator""_fs() noexcept { return VString; }
+    } // namespace literals
 
+    // NOLINTNEXTLINE misc-use-internal-linkage
     template<std::size_t N> constexpr auto format_as(const static_string<N>& string) -> std::string_view {
         return string.view();
     }
@@ -124,7 +124,7 @@ export namespace utility {
     }
 
     template<std::size_t K, std::size_t M>
-    constexpr static_string<K + M> operator+(const static_string<K>& lhs, const static_string<M>& rhs) {
+    constexpr auto operator+(const static_string<K>& lhs, const static_string<M>& rhs) -> static_string<K + M> {
         static_string<K + M> result;
         std::ranges::copy(lhs, result.begin());
         std::ranges::copy(rhs, result.begin() + K);
@@ -132,13 +132,13 @@ export namespace utility {
     }
 
     template<size_t K, size_t M>
-    constexpr static_string<K - 1 + M> operator+(const char (&lhs)[K], const static_string<M>& rhs) {
+    constexpr auto operator+(const char (&lhs)[K], const static_string<M>& rhs) -> static_string<K - 1 + M> {
         static_string lhs2{lhs};
         return lhs2 + rhs;
     }
 
     template<size_t K, size_t M>
-    constexpr static_string<K + M - 1> operator+(const static_string<K>& lhs, const char (&rhs)[M]) {
+    constexpr auto operator+(const static_string<K>& lhs, const char (&rhs)[M]) -> static_string<K + M - 1> {
         static_string rhs2{rhs};
         return lhs + rhs2;
     }

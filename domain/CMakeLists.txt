@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 
+include(GenerateExportHeader)
+
 include(../cmake/folders.cmake)
 include(../cmake/linker.cmake)
 include(../cmake/sanitizers.cmake)
@@ -50,9 +52,36 @@ endif()
 
 add_library(${PROJECT_NAME})
 
-file(GLOB _domain_cxx_modules ${PROJECT_SOURCE_DIR}/module/domain/*.cppm)
+# ---- Generate export header
 
-target_sources(${PROJECT_NAME} PUBLIC FILE_SET ${PROJECT_NAME}_module TYPE CXX_MODULES FILES ${_domain_cxx_modules})
+generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
+                       ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/exports/exports.hpp)
+
+file(GLOB _domain_cxx_modules ${PROJECT_SOURCE_DIR}/src/domain/*.cppm)
+
+target_sources(
+    ${PROJECT_NAME}
+    PUBLIC FILE_SET
+           ${PROJECT_NAME}_module
+           TYPE
+           CXX_MODULES
+           FILES
+           ${_domain_cxx_modules}
+           FILE_SET
+           ${PROJECT_NAME}_headers
+           TYPE
+           HEADERS
+           BASE_DIRS
+           ${PROJECT_BINARY_DIR}/include
+           FILES
+           ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/exports/exports.hpp)
+
+# ---- Include directories
+
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+           $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 # ---- Configure linker
 

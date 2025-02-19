@@ -1,8 +1,8 @@
 #include <iostream>
 
-import Utility;
+import utility;
 
-using utility::operator""_fs;
+using utility::literals::operator""_fs;
 
 auto main() -> int {
     constexpr auto hello_world = "hello world"_fs;

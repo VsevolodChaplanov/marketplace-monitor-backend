@@ -46,7 +46,7 @@ target_sanitizers(
 add_library(${PROJECT_NAME}-pch INTERFACE) # declare library if pch is off prevent install rule error for unknown target
 
 if(${PROJECT_NAME}_ENABLE_PCH)
-    target_precompile_headers(${PROJECT_NAME}-pch INTERFACE <string> <vector>)
+    target_precompile_headers(${PROJECT_NAME}-pch INTERFACE <string> <vector> <array>)
     target_link_libraries(${PROJECT_NAME}-pch INTERFACE ${PROJECT_NAME}-options)
 endif()
 
@@ -61,7 +61,7 @@ add_library(${PARENT_PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # ---- Collect sources
 
-file(GLOB _utility_cxx_modules ${PROJECT_SOURCE_DIR}/module/${PROJECT_NAME}/*.cppm)
+file(GLOB _utility_cxx_modules ${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/*.cppm)
 
 # ---- Set target sources
 
@@ -72,7 +72,7 @@ target_sources(
            TYPE
            CXX_MODULES
            BASE_DIRS
-           ${PROJECT_SOURCE_DIR}/module
+           ${PROJECT_SOURCE_DIR}/src
            FILES
            ${_utility_cxx_modules})
 
