@@ -31,6 +31,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PARENT_PROJECT_NAME} Catch2::Cat
 
 target_sources(${PROJECT_NAME} PRIVATE ${TEST_SOURCES})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON)
+
 # ---- Discover Catch2 tests
 
 catch_discover_tests(${PROJECT_NAME})

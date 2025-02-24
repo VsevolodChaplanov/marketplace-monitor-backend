@@ -39,6 +39,14 @@ endif()
 
 enable_ipo()
 
+# ---- Add project wide options library
+
+add_library(${PROJECT_NAME}-options INTERFACE)
+
+# ---- Set cxx standard
+
+target_compile_features(${PROJECT_NAME}-options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
+
 add_subdirectory(utility)
 add_subdirectory(domain)
 # add_subdirectory(repository)
@@ -46,6 +54,11 @@ add_subdirectory(service)
 # add_subdirectory(core)
 
 # add_subdirectory(app)
+
+export(
+    TARGETS ${PROJECT_NAME}-options
+    NAMESPACE ${PARENT_PROJECT_NAME}::
+    FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 
 # ---- Target to link with all library modules
 

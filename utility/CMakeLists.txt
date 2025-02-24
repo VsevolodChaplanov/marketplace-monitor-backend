@@ -24,7 +24,7 @@ add_library(${PROJECT_NAME}-options INTERFACE)
 
 # ---- Set compile features
 
-target_link_libraries(${PROJECT_NAME}-options INTERFACE ${PARENT_PROJECT_NAME}-options)
+target_link_libraries(${PROJECT_NAME}-options INTERFACE $<BUILD_INTERFACE:${PARENT_PROJECT_NAME}-options>)
 
 # ---- Add sanitizers
 
@@ -47,7 +47,7 @@ add_library(${PROJECT_NAME}-pch INTERFACE) # declare library if pch is off preve
 
 if(${PROJECT_NAME}_ENABLE_PCH)
     target_precompile_headers(${PROJECT_NAME}-pch INTERFACE <string> <vector> <array>)
-    target_link_libraries(${PROJECT_NAME}-pch INTERFACE ${PROJECT_NAME}-options)
+    target_link_libraries(${PROJECT_NAME}-pch INTERFACE $<BUILD_INTERFACE:${PROJECT_NAME}-options>)
 endif()
 
 # ---- Declare library ----
