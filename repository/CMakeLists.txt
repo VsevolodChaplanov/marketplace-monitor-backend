@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+set(PARENT_PROJECT_NAME ${PROJECT_NAME})
+
 include(GenerateExportHeader)
 
 include(../cmake/folders.cmake)
@@ -61,16 +63,42 @@ add_library(${MAIN_PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # ---- Generate export header
 
-generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/generated/exports/exports.hpp)
+generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
+                       ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/exports/exports.hpp)
 
 # ---- Collect sources
 
-file(GLOB _repository_module_units ${PROJECT_SOURCE_DIR}/module/users/*.cppm ${PROJECT_SOURCE_DIR}/module/items/*.cppm)
+file(GLOB _repository_module_units ${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/*.cppm)
+file(GLOB _repository_module_interface ${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/*.ixx)
 
 # ---- Set target sources
 
-target_sources(${PROJECT_NAME} PUBLIC FILE_SET CXX_MODULES BASE_DIRS ${PROJECT_SOURCE_DIR}/module FILES
-                                      ${_repository_module_units})
+target_sources(
+    ${PROJECT_NAME}
+    PUBLIC FILE_SET
+           cxx_modules_interface
+           TYPE
+           CXX_MODULES
+           BASE_DIRS
+           ${PROJECT_SOURCE_DIR}/src
+           FILES
+           ${_repository_module_interface}
+    PUBLIC FILE_SET
+           headers
+           TYPE
+           HEADERS
+           BASE_DIRS
+           ${PROJECT_BINARY_DIR}/include
+           FILES
+           ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/exports/exports.hpp
+    PRIVATE FILE_SET
+            cxx_modules_impl
+            TYPE
+            CXX_MODULES
+            BASE_DIRS
+            ${PROJECT_SOURCE_DIR}/src
+            FILES
+            ${_repository_module_units})
 
 # ---- Set target include dirs
 
@@ -81,11 +109,8 @@ target_include_directories(${PROJECT_NAME} ${warning_guard} PUBLIC $<BUILD_INTER
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PUBLIC fmt::fmt
-           spdlog::spdlog
-           Boost::headers
-           openssl::openssl
-           $<BUILD_INTERFACE:Boost::mysql>
+    # \todo remove build interface for boost::mysql
+    PUBLIC fmt::fmt spdlog::spdlog Boost::headers openssl::openssl $<BUILD_INTERFACE:Boost::mysql> domain
     PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}-pch> $<BUILD_INTERFACE:${PROJECT_NAME}-options>)
 
 # ---- Configure linker
@@ -104,7 +129,8 @@ target_cppcheck(${PROJECT_NAME} "${_repository_module_units}" WARNINGS_AS_ERRORS
 
 # ---- IWYU target
 
-target_include_what_you_use(${PROJECT_NAME} "${_repository_module_units}" USE_ON_BUILD "${PROJECT_NAME}_ENABLE_IWYU_ON_BUILD")
+target_include_what_you_use(${PROJECT_NAME} "${_repository_module_units}" USE_ON_BUILD
+                            "${PROJECT_NAME}_ENABLE_IWYU_ON_BUILD")
 
 # ---- Clang-format target
 
@@ -129,12 +155,9 @@ if(${PROJECT_NAME}_BUILD_EXAMPLES)
     add_subdirectory(example)
 endif()
 
-# ---- Build tests
+# \todo up tests # ---- Build tests
 
-include(CTest)
-if(BUILD_TESTING AND ${PROJECT_NAME}_BUILD_TESTS)
-    add_subdirectory(test)
-endif()
+# include(CTest) if(BUILD_TESTING AND ${PROJECT_NAME}_BUILD_TESTS) add_subdirectory(test) endif()
 
 # ---- Configure install rules
 

@@ -5,13 +5,16 @@ include(GNUInstallDirs)
 set(package ${PROJECT_NAME})
 
 install(
-    TARGETS ${package} # boost_compat boost_mysql
-    # EXPORT ${package}Targets
+    TARGETS ${package}
+    EXPORT ${package}Targets
     RUNTIME COMPONENT ${package}_Runtime
     LIBRARY COMPONENT ${package}_Runtime NAMELINK_COMPONENT ${package}_Development
     ARCHIVE COMPONENT ${package}_Development
             FILE_SET ${PROJECT_NAME}_module
             DESTINATION ${CMAKE_INSTALL_DATADIR}/c++/modules/${package}
+            COMPONENT ${package}_Development
+            FILE_SET ${PROJECT_NAME}_headers
+            DESTINATION ${CMAKE_INSTALL_INCLUDEIDR}
             COMPONENT ${package}_Development)
 
 write_basic_package_version_file(${package}ConfigVersion.cmake COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)
@@ -34,11 +37,11 @@ install(
     DESTINATION ${${package}_INSTALL_CMAKEDIR}
     COMPONENT ${package}_Development)
 
-# install(
-#     EXPORT ${PROJECT_NAME}Targets
-#     NAMESPACE Service::
-#     DESTINATION ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
-#     COMPONENT ${package}_Development)
+install(
+    EXPORT ${PROJECT_NAME}Targets
+    NAMESPACE Service::
+    DESTINATION ${${PROJECT_NAME}_INSTALL_CMAKEDIR}
+    COMPONENT ${package}_Development)
 
 if(PROJECT_IS_TOP_LEVEL)
     include(CPack)

@@ -10,10 +10,10 @@ install(
     RUNTIME COMPONENT ${package}_Runtime
     LIBRARY COMPONENT ${package}_Runtime NAMELINK_COMPONENT ${package}_Development
     ARCHIVE COMPONENT ${package}_Development
-            FILE_SET CXX_MODULES
+            FILE_SET cxx_modules_interface
             DESTINATION ${CMAKE_INSTALL_DATADIR}/c++/modules/${package}
             COMPONENT ${package}_Development
-            FILE_SET HEADERS
+            FILE_SET headers
             COMPONENT ${package}_Development)
 
 write_basic_package_version_file(${package}ConfigVersion.cmake COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)

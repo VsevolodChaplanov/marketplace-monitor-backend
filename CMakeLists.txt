@@ -49,7 +49,7 @@ target_compile_features(${PROJECT_NAME}-options INTERFACE cxx_std_${CMAKE_CXX_ST
 
 add_subdirectory(utility)
 add_subdirectory(domain)
-# add_subdirectory(repository)
+add_subdirectory(repository)
 add_subdirectory(service)
 # add_subdirectory(core)
 
@@ -57,7 +57,7 @@ add_subdirectory(service)
 
 export(
     TARGETS ${PROJECT_NAME}-options
-    NAMESPACE ${PARENT_PROJECT_NAME}::
+    NAMESPACE ${PROJECT_NAME}::
     FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 
 # ---- Target to link with all library modules

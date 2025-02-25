@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 
+set(PARENT_PROJECT_NAME ${PROJECT_NAME})
+
 include(GenerateExportHeader)
 
 include(../cmake/folders.cmake)
@@ -118,6 +120,13 @@ if(${PROJECT_NAME}_BUILD_DOCS)
     include(../cmake/docs.cmake)
     wrap_doxygen_add_docs(${PROJECT_NAME} SOURCE_DIRS "${_domain_cxx_modules}" OUTPUT "doxygen")
 endif()
+
+# ---- Exporting
+
+export(
+    TARGETS ${PROJECT_NAME}
+    NAMESPACE ${PARENT_PROJECT_NAME}::
+    FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake)
 
 # ---- Configure install rules
 
