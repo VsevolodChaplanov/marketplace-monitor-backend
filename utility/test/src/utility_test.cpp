@@ -2,7 +2,7 @@
 #include <string>
 #include <string_view>
 
-import utility;
+import utility.static_string;
 
 using utility::literals::operator""_fs;
 

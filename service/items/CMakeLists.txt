@@ -57,37 +57,36 @@ asio_grpc_protobuf_generate(
     TARGET
     ${PROJECT_NAME}-proto
     OUT_DIR
-    ${PROJECT_BINARY_DIR}/include/generated/items/
+    ${PROJECT_BINARY_DIR}/include/items/generated/grpc
     PROTOS
     "${_items_service_protos}")
 
-file(GLOB _items_service_module_units ${PROJECT_SOURCE_DIR}/module/items/*.cppm)
-file(GLOB _items_service_generated_headers ${PROJECT_BINARY_DIR}/include/generated/items/*.h
-     ${PROJECT_BINARY_DIR}/include/generated/items/*.hpp)
+file(GLOB _items_service_module_units ${PROJECT_SOURCE_DIR}/src/items/*.cppm)
+file(GLOB _items_service_generated_headers ${PROJECT_BINARY_DIR}/include/items/generated/grpc/*.h
+     ${PROJECT_BINARY_DIR}/include/items/generated/grpc/*.hpp)
 
 add_library(${PROJECT_NAME})
 
 # ---- Generate export header
 
-generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/generated/exports/exports.hpp)
+generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
+                       ${PROJECT_BINARY_DIR}/include/items/generated/exports/exports.hpp)
 
-list(APPEND _items_service_generated_headers ${PROJECT_BINARY_DIR}/include/generated/exports/exports.hpp)
+list(APPEND _items_service_generated_headers ${PROJECT_BINARY_DIR}/include/items/generated/exports/exports.hpp)
 
+# cmake-format: off
 target_sources(
     ${PROJECT_NAME}
-    PUBLIC FILE_SET
-           CXX_MODULES
-           TYPE
-           CXX_MODULES
-           FILES
-           ${_items_service_module_units}
-           FILE_SET
-           HEADERS
-           BASE_DIRS
-           ${PROJECT_BINARY_DIR}/include
-           TYPE
-           FILES
-           ${_items_service_generated_headers})
+    PUBLIC 
+        FILE_SET cxx_modules
+            TYPE CXX_MODULES
+            BASE_DIRS ${PROJECT_SOURCE_DIR}/src
+            FILES ${_items_service_module_units}
+        FILE_SET headers
+            TYPE HEADERS
+            BASE_DIRS ${PROJECT_BINARY_DIR}/include
+            FILES ${_items_service_generated_headers})
+# cmake-format: on
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
                                                   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
@@ -100,22 +99,23 @@ target_configure_linker(${PROJECT_NAME})
 
 # ---- Clang-tidy target
 
-target_clangtidy(${PROJECT_NAME} "${_items_service_protos}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}" USE_ON_BUILD
-                 "${PROJECT_NAME}_ENABLE_CLANGTIDY_ON_BUILD")
+target_clangtidy(${PROJECT_NAME} "${_items_service_module_units}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}"
+                 USE_ON_BUILD "${${PROJECT_NAME}_ENABLE_CLANGTIDY_ON_BUILD}")
 
 # ---- Cppcheck target
 
-target_cppcheck(${PROJECT_NAME} "${_items_service_protos}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}" USE_ON_BUILD
-                "${PROJECT_NAME}_ENABLE_CPPCHECK_ON_BUILD")
+target_cppcheck(${PROJECT_NAME} "${_items_service_module_units}" WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}"
+                USE_ON_BUILD "${${PROJECT_NAME}_ENABLE_CPPCHECK_ON_BUILD}")
 
 # ---- IWYU target
 
-target_include_what_you_use(${PROJECT_NAME} "${_items_service_protos}" USE_ON_BUILD
-                            "${PROJECT_NAME}_ENABLE_IWYU_ON_BUILD")
+if(${PROJECT_NAME}_ENABLE_IWYU_ON_BUILD)
+    target_include_what_you_use(${PROJECT_NAME} "${_items_service_module_units}")
+endif()
 
 # ---- Clang-format target
 
-target_clang_format(${PROJECT_NAME} "${_items_service_protos}")
+target_clang_format(${PROJECT_NAME} "${_items_service_module_units}")
 
 # ---- Add coverage support
 

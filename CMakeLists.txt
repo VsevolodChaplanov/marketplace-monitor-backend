@@ -14,14 +14,13 @@ include(cmake/conan.cmake)
 
 # download_conan_provider()
 
-
 project(
     ${MAIN_PROJECT_NAME}
     VERSION 0.1.0
     DESCRIPTION "Short description"
     HOMEPAGE_URL "https://example.com/"
     LANGUAGES CXX)
-    
+
 run_vcvarsall()
 
 include(cmake/project-is-top-level.cmake)
@@ -52,7 +51,6 @@ add_subdirectory(utility)
 add_subdirectory(domain)
 add_subdirectory(repository)
 add_subdirectory(service)
-# add_subdirectory(core)
 
 # add_subdirectory(app)
 

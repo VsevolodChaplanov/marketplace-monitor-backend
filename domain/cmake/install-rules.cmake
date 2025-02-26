@@ -14,7 +14,7 @@ install(
             DESTINATION ${CMAKE_INSTALL_DATADIR}/c++/modules/${package}
             COMPONENT ${package}_Development
             FILE_SET ${PROJECT_NAME}_headers
-            DESTINATION ${CMAKE_INSTALL_INCLUDEIDR}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
             COMPONENT ${package}_Development)
 
 write_basic_package_version_file(${package}ConfigVersion.cmake COMPATIBILITY SameMajorVersion ARCH_INDEPENDENT)

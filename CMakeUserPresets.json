@@ -28,6 +28,14 @@
             }
         },
         {
+            "name": "iwyu-off",
+            "hidden": true,
+            "cacheVariables": {
+                "monitor_ENABLE_IWYU_ON_BUILD": "OFF",
+                "service-items_ENABLE_IWYU_ON_BUILD": "OFF"
+            }
+        },
+        {
             "name": "dev-common",
             "hidden": true,
             "inherits": [
@@ -54,7 +62,8 @@
                 "dev-common",
                 "ci-linux",
                 "cppcheck",
-                "clang-tidy"
+                "clang-tidy",
+                "iwyu-off"
             ],
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
