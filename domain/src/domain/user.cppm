@@ -1,18 +1,13 @@
 module;
 
-#include <chrono>
 #include <cstdint>
 #include <string>
 
 #include <domain/exports/exports.hpp>
 
-export module domain:user;
+export module domain.user;
 
 namespace domain {
-
-    using clock = std::chrono::system_clock;
-
-    export using time_point_t = clock::time_point;
     export using id_t = std::uint64_t;
 
     export struct DOMAIN_EXPORT user_model final {
@@ -21,11 +16,10 @@ namespace domain {
         std::string login;
         std::string password_hash;
 
-        time_point_t created_at{clock::now()};
-        time_point_t updated_at{clock::now()};
-
         bool is_active{true};
         bool is_accepted{false};
+
+        constexpr auto operator<=>(const user_model& other) const noexcept { return id <=> other.id; }
     };
 
     export struct DOMAIN_EXPORT telegram_user_model final {
@@ -34,7 +28,6 @@ namespace domain {
         id_t telegram_id{0};
         id_t user_fk{0};
 
-        time_point_t created_at{clock::now()};
-        time_point_t updated_at{clock::now()};
+        constexpr auto operator<=>(const user_model& other) const noexcept { return id <=> other.id; }
     };
 } // namespace domain

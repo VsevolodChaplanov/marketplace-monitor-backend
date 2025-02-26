@@ -31,6 +31,7 @@
         {
             "name": "conan",
             "hidden": true,
+            "toolchainFile": "${sourceDir}/conan/${hostSystemName}/conan_toolchain.cmake",
             "cacheVariables": {
                 "CMAKE_POLICY_DEFAULT_CMP0091": "NEW"
             },

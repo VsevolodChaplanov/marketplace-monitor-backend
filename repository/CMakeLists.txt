@@ -69,20 +69,19 @@ generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
 # ---- Collect sources
 
 file(GLOB _repository_module_units ${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/*.cppm)
-file(GLOB _repository_module_interface ${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/*.ixx)
 
 # ---- Set target sources
 
 target_sources(
     ${PROJECT_NAME}
     PUBLIC FILE_SET
-           cxx_modules_interface
+           cxx_modules
            TYPE
            CXX_MODULES
            BASE_DIRS
            ${PROJECT_SOURCE_DIR}/src
            FILES
-           ${_repository_module_interface}
+           ${_repository_module_units}
     PUBLIC FILE_SET
            headers
            TYPE
@@ -90,15 +89,7 @@ target_sources(
            BASE_DIRS
            ${PROJECT_BINARY_DIR}/include
            FILES
-           ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/exports/exports.hpp
-    PRIVATE FILE_SET
-            cxx_modules_impl
-            TYPE
-            CXX_MODULES
-            BASE_DIRS
-            ${PROJECT_SOURCE_DIR}/src
-            FILES
-            ${_repository_module_units})
+           ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/exports/exports.hpp)
 
 # ---- Set target include dirs
 
@@ -112,6 +103,10 @@ target_link_libraries(
     # \todo remove build interface for boost::mysql
     PUBLIC fmt::fmt spdlog::spdlog Boost::headers openssl::openssl $<BUILD_INTERFACE:Boost::mysql> domain
     PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}-pch> $<BUILD_INTERFACE:${PROJECT_NAME}-options>)
+
+# ---- Scan for modules explicitly
+
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON)
 
 # ---- Configure linker
 

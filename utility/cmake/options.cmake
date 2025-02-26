@@ -1,3 +1,4 @@
+option(${PROJECT_NAME}_BUILD_SHARED_LIBS "Build ${PROJECT_NAME} as shared library" ${BUILD_SHARED_LIBS})
 option(${PROJECT_NAME}_BUILD_EXAMPLES "Build examples for ${PROJECT_NAME} part of project"
        ${${MAIN_PROJECT_NAME}_BUILD_EXAMPLES})
 option(${PROJECT_NAME}_BUILD_TESTS "Build tests for ${PROJECT_NAME} part of project"

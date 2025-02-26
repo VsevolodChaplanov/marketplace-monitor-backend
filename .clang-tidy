@@ -15,6 +15,7 @@ Checks: "-*\
   ,portability-*\
   ,readability-*\
   ,-fuchsia-multiple-inheritance\
+  ,-misc-include-cleaner\
   "
 WarningsAsErrors: ""
 CheckOptions:
@@ -154,3 +155,5 @@ CheckOptions:
     value: "lower_case"
   - key: "readability-identifier-naming.VirtualMethodCase"
     value: "lower_case"
+  - key: "misc-non-private-member-variables-in-classes:IgnoreClassesWithAllMemberVariablesBeingPublic"
+    value: "1"

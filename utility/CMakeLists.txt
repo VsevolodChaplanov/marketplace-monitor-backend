@@ -55,7 +55,7 @@ endif()
 if(${PROJECT_NAME}_BUILD_SHARED_LIBS)
     add_library(${PROJECT_NAME} SHARED)
 else()
-    add_library(${PROJECT_NAME} SHARED)
+    add_library(${PROJECT_NAME} STATIC)
 endif()
 add_library(${PARENT_PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
@@ -82,6 +82,10 @@ target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_NAME}-options>
     PRIVATE $<BUILD_INTERFACE:${PROJECT_NAME}-pch>)
+
+# ---- Scan for modules explicitly
+
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON)
 
 # ---- Export
 

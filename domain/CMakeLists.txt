@@ -59,7 +59,7 @@ add_library(${PROJECT_NAME})
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
                        ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/exports/exports.hpp)
 
-file(GLOB _domain_cxx_modules ${PROJECT_SOURCE_DIR}/src/domain/*.cppm)
+file(GLOB _domain_cxx_modules ${PROJECT_SOURCE_DIR}/src/${PROJECT_NAME}/*.cppm)
 
 target_sources(
     ${PROJECT_NAME}
@@ -67,6 +67,8 @@ target_sources(
            ${PROJECT_NAME}_module
            TYPE
            CXX_MODULES
+           BASE_DIRS
+           ${PROJECT_SOURCE_DIR}/src
            FILES
            ${_domain_cxx_modules}
            FILE_SET
@@ -84,6 +86,10 @@ target_include_directories(
     ${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include> $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
+# ---- Scan for modules explicitly
+
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_SCAN_FOR_MODULES ON)
 
 # ---- Configure linker
 

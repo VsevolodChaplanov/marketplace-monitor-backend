@@ -10,7 +10,7 @@ install(
     RUNTIME COMPONENT ${package}_Runtime
     LIBRARY COMPONENT ${package}_Runtime NAMELINK_COMPONENT ${package}_Development
     ARCHIVE COMPONENT ${package}_Development
-            FILE_SET cxx_modules_interface
+            FILE_SET cxx_modules
             DESTINATION ${CMAKE_INSTALL_DATADIR}/c++/modules/${package}
             COMPONENT ${package}_Development
             FILE_SET headers

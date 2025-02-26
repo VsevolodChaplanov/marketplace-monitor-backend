@@ -12,9 +12,8 @@ include(cmake/common_options.cmake)
 include(cmake/vsenvironment.cmake)
 include(cmake/conan.cmake)
 
-download_conan_provider()
+# download_conan_provider()
 
-run_vcvarsall()
 
 project(
     ${MAIN_PROJECT_NAME}
@@ -22,6 +21,8 @@ project(
     DESCRIPTION "Short description"
     HOMEPAGE_URL "https://example.com/"
     LANGUAGES CXX)
+    
+run_vcvarsall()
 
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)

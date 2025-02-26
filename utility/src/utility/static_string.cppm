@@ -7,7 +7,7 @@ module;
 #include <string>
 #include <string_view>
 
-export module utility:static_string;
+export module utility.static_string;
 
 export namespace utility {
     /**
